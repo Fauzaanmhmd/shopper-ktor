@@ -17,16 +17,29 @@ import io.ktor.http.contentType
 import io.ktor.util.InternalAPI
 import io.ktor.utils.io.errors.IOException
 
-class NetworkServiceImpl( val client: HttpClient): NetworkService {
-    override suspend fun getProduct(): ResultWrapper<List<Product>> {
+class NetworkServiceImpl(val client: HttpClient) : NetworkService {
+    private val baseUrl = "https://ecommerce-ktor-4641e7ff1b63.herokuapp.com"
+    override suspend fun getProducts(category: String?): ResultWrapper<List<Product>> {
+        val url =
+            if (category != null) "$baseUrl/products/category/$category" else "$baseUrl/products"
+
         return makeWebRequest(
-            url = "https://fakestoreapi.com/products",
+            url = url,
             method = HttpMethod.Get,
             mapper = { dataModels: List<DataProductModel> ->
                 dataModels.map { it.toProduct() }
             }
         )
     }
+
+    override suspend fun getCategories(): ResultWrapper<List<String>> {
+        val url = "$baseUrl/products/categories"
+        return makeWebRequest<List<String>, List<String>>(
+            url = url,
+            method = HttpMethod.Get,
+        )
+    }
+
     @OptIn(InternalAPI::class)
     suspend inline fun <reified T, R> makeWebRequest(
         url: String,
@@ -71,5 +84,4 @@ class NetworkServiceImpl( val client: HttpClient): NetworkService {
             ResultWrapper.Failure(e)
         }
     }
-
 }

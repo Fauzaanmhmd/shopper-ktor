@@ -4,7 +4,8 @@ import com.fauzan.domain.model.Product
 import java.lang.Exception
 
 interface NetworkService {
-    suspend fun getProduct(): ResultWrapper<List<Product>>
+    suspend fun getProducts(category: String?): ResultWrapper<List<Product>>
+    suspend fun getCategories(): ResultWrapper<List<String>>
 }
 
 sealed class ResultWrapper<out T> {
