@@ -1,11 +1,17 @@
 package com.fauzan.domain.network
 
-import com.fauzan.domain.model.Product
-import java.lang.Exception
+import com.fauzan.domain.model.CartModel
+import com.fauzan.domain.model.CategoriesListModel
+import com.fauzan.domain.model.ProductListModel
+import com.fauzan.domain.model.request.AddCartRequestModel
 
 interface NetworkService {
-    suspend fun getProducts(category: String?): ResultWrapper<List<Product>>
-    suspend fun getCategories(): ResultWrapper<List<String>>
+    suspend fun getProducts(category: Int?): ResultWrapper<ProductListModel>
+    suspend fun getCategories(): ResultWrapper<CategoriesListModel>
+
+    suspend fun addProductToCart(
+        request: AddCartRequestModel
+    ) : ResultWrapper<CartModel>
 }
 
 sealed class ResultWrapper<out T> {
