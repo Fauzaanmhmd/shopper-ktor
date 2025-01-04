@@ -32,13 +32,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.fauzan.domain.model.Product
 import com.fauzan.model.UiProductModel
 import com.fauzan.navigation.CartScreen
 import com.fauzan.navigation.HomeScreen
 import com.fauzan.navigation.ProductDetails
 import com.fauzan.navigation.ProfileScreen
 import com.fauzan.navigation.productNavType
+import com.fauzan.ui.cart.CartScreen
 import com.fauzan.ui.home.HomeScreen
 import com.fauzan.ui.product_details.ProductDetailsScreen
 import com.fauzan.ui.theme.ShopperTheme
@@ -74,8 +74,7 @@ class MainActivity : ComponentActivity() {
                             }
                             composable<CartScreen> {
                                 shoulShowBottomNav.value = true
-                                Box(modifier = Modifier.fillMaxSize())
-                                Text(text = "Cart")
+                                CartScreen(navController)
                             }
                             composable<ProfileScreen> {
                                 shoulShowBottomNav.value = true

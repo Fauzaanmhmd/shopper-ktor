@@ -12,6 +12,8 @@ interface NetworkService {
     suspend fun addProductToCart(
         request: AddCartRequestModel
     ) : ResultWrapper<CartModel>
+
+    suspend fun getCart() : ResultWrapper<CartModel>
 }
 
 sealed class ResultWrapper<out T> {
