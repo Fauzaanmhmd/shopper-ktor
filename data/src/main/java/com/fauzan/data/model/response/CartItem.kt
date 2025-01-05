@@ -4,7 +4,7 @@ import com.fauzan.domain.model.CartItemModel
 import kotlinx.serialization.Serializable
 
 @Serializable
-class CartItem(
+data class CartItem(
     val id: Int,
     val productId: Int,
     val price: Double,

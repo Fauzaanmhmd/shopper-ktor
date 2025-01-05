@@ -1,6 +1,8 @@
 package com.fauzan.domain.network
 
+import com.fauzan.domain.model.CartItemModel
 import com.fauzan.domain.model.CartModel
+import com.fauzan.domain.model.CartSummary
 import com.fauzan.domain.model.CategoriesListModel
 import com.fauzan.domain.model.ProductListModel
 import com.fauzan.domain.model.request.AddCartRequestModel
@@ -14,6 +16,9 @@ interface NetworkService {
     ) : ResultWrapper<CartModel>
 
     suspend fun getCart() : ResultWrapper<CartModel>
+    suspend fun updateQuantity(cartItemModel: CartItemModel): ResultWrapper<CartModel>
+    suspend fun deleteItem(cartItemId: Int, userId: Int): ResultWrapper<CartModel>
+    suspend fun getCartSummary(userId: Int): ResultWrapper<CartSummary>
 }
 
 sealed class ResultWrapper<out T> {

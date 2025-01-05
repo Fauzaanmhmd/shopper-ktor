@@ -44,6 +44,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.fauzan.R
 import com.fauzan.domain.model.CartItemModel
+import com.fauzan.navigation.CartSummaryScreen
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
@@ -118,12 +119,20 @@ fun CartScreen(navController: NavController, viewModel: CartViewModel = koinView
                 ) {
                     LazyColumn {
                         items(cartItems.value) { item ->
-                            CartItem(item = item)
+                            CartItem(
+                                item = item,
+                                onIncrement = { viewModel.incrementQuantity(it) },
+                                onDecrement = { viewModel.decrementQuantity(it) },
+                                onRemove = { viewModel.removeItem(it) },
+                            )
                         }
                     }
                 }
                 if (shouldShowList) {
-                    Button(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+                    Button(
+                        onClick = { navController.navigate(CartSummaryScreen) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Text(text = "Checkout")
                     }
                 }
@@ -147,7 +156,12 @@ fun CartScreen(navController: NavController, viewModel: CartViewModel = koinView
 }
 
 @Composable
-fun CartItem(item: CartItemModel) {
+fun CartItem(
+    item: CartItemModel,
+    onIncrement: (CartItemModel) -> Unit,
+    onDecrement: (CartItemModel) -> Unit,
+    onRemove: (CartItemModel) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -180,21 +194,21 @@ fun CartItem(item: CartItemModel) {
         }
 
         Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.End) {
-            IconButton(onClick = {}) {
+            IconButton(onClick = { onRemove(item) }) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_delete),
                     contentDescription = null
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {}) {
+                IconButton(onClick = { onIncrement(item) }) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_add),
                         contentDescription = null
                     )
                 }
                 Text(text = item.quantity.toString())
-                IconButton(onClick = {}) {
+                IconButton(onClick = { onDecrement(item) }) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_substract),
                         contentDescription = null

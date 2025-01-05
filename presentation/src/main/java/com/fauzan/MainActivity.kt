@@ -34,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.fauzan.model.UiProductModel
 import com.fauzan.navigation.CartScreen
+import com.fauzan.navigation.CartSummaryScreen
 import com.fauzan.navigation.HomeScreen
 import com.fauzan.navigation.ProductDetails
 import com.fauzan.navigation.ProfileScreen
@@ -41,6 +42,7 @@ import com.fauzan.navigation.productNavType
 import com.fauzan.ui.cart.CartScreen
 import com.fauzan.ui.home.HomeScreen
 import com.fauzan.ui.product_details.ProductDetailsScreen
+import com.fauzan.ui.summary.CartSummaryScreen
 import com.fauzan.ui.theme.ShopperTheme
 import kotlin.reflect.typeOf
 
@@ -80,6 +82,10 @@ class MainActivity : ComponentActivity() {
                                 shoulShowBottomNav.value = true
                                 Box(modifier = Modifier.fillMaxSize())
                                 Text(text = "Profile")
+                            }
+                            composable<CartSummaryScreen> {
+                                shoulShowBottomNav.value = false
+                                CartSummaryScreen(navController = navController)
                             }
                             composable<ProductDetails> (
                                 typeMap = mapOf(typeOf<UiProductModel>() to productNavType)
