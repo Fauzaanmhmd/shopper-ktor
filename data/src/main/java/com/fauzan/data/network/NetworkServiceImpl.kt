@@ -1,10 +1,13 @@
 package com.fauzan.data.network
 
 import com.fauzan.data.model.request.AddToCartRequest
+import com.fauzan.data.model.request.AddressDataModel
 import com.fauzan.data.model.response.CartResponse
 import com.fauzan.data.model.response.CartSummaryResponse
 import com.fauzan.data.model.response.CategoriesListResponse
+import com.fauzan.data.model.response.PlaceOrderResponse
 import com.fauzan.data.model.response.ProductListResponse
+import com.fauzan.domain.model.AddressDomainModel
 import com.fauzan.domain.model.CartItemModel
 import com.fauzan.domain.model.CartModel
 import com.fauzan.domain.model.CartSummary
@@ -103,6 +106,21 @@ class NetworkServiceImpl(val client: HttpClient) : NetworkService {
             method = HttpMethod.Get,
             mapper = { cartSummary: CartSummaryResponse ->
                 cartSummary.toCartSummary()
+            })
+    }
+
+    override suspend fun placeOrder(
+        address: AddressDomainModel,
+        userId: Long
+    ): ResultWrapper<Long> {
+        val dataModel = AddressDataModel.fromDomainAddress(address)
+        val url = "$baseUrl/orders/$userId"
+        return makeWebRequest(
+            url = url,
+            method = HttpMethod.Get,
+            body = dataModel,
+            mapper = { orderRes: PlaceOrderResponse ->
+                orderRes.data.first().id
             })
     }
 

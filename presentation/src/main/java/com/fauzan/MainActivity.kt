@@ -1,6 +1,7 @@
 package com.fauzan
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -38,12 +39,16 @@ import com.fauzan.navigation.CartSummaryScreen
 import com.fauzan.navigation.HomeScreen
 import com.fauzan.navigation.ProductDetails
 import com.fauzan.navigation.ProfileScreen
+import com.fauzan.navigation.UserAddressRoute
+import com.fauzan.navigation.UserAddressRouteWrapper
 import com.fauzan.navigation.productNavType
+import com.fauzan.navigation.userAddressNavType
 import com.fauzan.ui.cart.CartScreen
 import com.fauzan.ui.home.HomeScreen
 import com.fauzan.ui.product_details.ProductDetailsScreen
 import com.fauzan.ui.summary.CartSummaryScreen
 import com.fauzan.ui.theme.ShopperTheme
+import com.fauzan.ui.user_address.UserAddressScreen
 import kotlin.reflect.typeOf
 
 class MainActivity : ComponentActivity() {
@@ -56,7 +61,7 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf(true)
                 }
                 val navController = rememberNavController()
-                Scaffold (
+                Scaffold(
                     modifier = Modifier.fillMaxWidth(),
                     bottomBar = {
                         AnimatedVisibility(visible = shoulShowBottomNav.value, enter = fadeIn()) {
@@ -87,12 +92,22 @@ class MainActivity : ComponentActivity() {
                                 shoulShowBottomNav.value = false
                                 CartSummaryScreen(navController = navController)
                             }
-                            composable<ProductDetails> (
+                            composable<ProductDetails>(
                                 typeMap = mapOf(typeOf<UiProductModel>() to productNavType)
                             ) {
                                 shoulShowBottomNav.value = false
                                 val productRoute = it.toRoute<ProductDetails>()
                                 ProductDetailsScreen(navController, productRoute.product)
+                            }
+                            composable<UserAddressRoute>(
+                                typeMap = mapOf(typeOf<UserAddressRouteWrapper>() to userAddressNavType)
+                            ) {
+                                shoulShowBottomNav.value = false
+                                val userAddressRoute = it.toRoute<UserAddressRoute>()
+                                UserAddressScreen(
+                                    navController = navController,
+                                    userAddress = userAddressRoute.userAddressWrapper.userAddress
+                                )
                             }
                         }
                     }
@@ -145,9 +160,9 @@ fun BottomNavigationBar(navController: NavController) {
 }
 
 sealed class BottomNavItems(val route: Any, val title: String, val icon: Int) {
-    object Home: BottomNavItems(HomeScreen, "Home", icon = R.drawable.ic_home)
-    object Cart: BottomNavItems(CartScreen, "Cart", icon = R.drawable.ic_cart)
-    object Profile: BottomNavItems(ProfileScreen, "Profile", icon = R.drawable.ic_profile_bn)
+    object Home : BottomNavItems(HomeScreen, "Home", icon = R.drawable.ic_home)
+    object Cart : BottomNavItems(CartScreen, "Cart", icon = R.drawable.ic_cart)
+    object Profile : BottomNavItems(ProfileScreen, "Profile", icon = R.drawable.ic_profile_bn)
 }
 
 @Composable

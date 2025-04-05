@@ -1,5 +1,6 @@
 package com.fauzan.domain.network
 
+import com.fauzan.domain.model.AddressDomainModel
 import com.fauzan.domain.model.CartItemModel
 import com.fauzan.domain.model.CartModel
 import com.fauzan.domain.model.CartSummary
@@ -19,6 +20,7 @@ interface NetworkService {
     suspend fun updateQuantity(cartItemModel: CartItemModel): ResultWrapper<CartModel>
     suspend fun deleteItem(cartItemId: Int, userId: Int): ResultWrapper<CartModel>
     suspend fun getCartSummary(userId: Int): ResultWrapper<CartSummary>
+    suspend fun placeOrder(address: AddressDomainModel, userId: Long): ResultWrapper<Long>
 }
 
 sealed class ResultWrapper<out T> {
