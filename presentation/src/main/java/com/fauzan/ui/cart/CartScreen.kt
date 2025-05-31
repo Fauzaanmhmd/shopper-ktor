@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -141,7 +142,7 @@ fun CartScreen(navController: NavController, viewModel: CartViewModel = koinView
             if (loading.value) {
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     CircularProgressIndicator(modifier = Modifier.size(48.dp))
-                    Text(text = "Loading...")
+                    Text(text = stringResource(R.string.loading))
                 }
             }
 

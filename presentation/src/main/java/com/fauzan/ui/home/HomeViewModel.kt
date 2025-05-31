@@ -39,7 +39,7 @@ class HomeViewModel(
     private suspend fun getProducts(category: Int?): List<Product> {
         getProductUseCase.execute(category).let { result ->
             when (result) {
-                is ResultWrapper.Succsess -> {
+                is ResultWrapper.Success -> {
                     return (result).value.products
                 }
 
@@ -53,7 +53,7 @@ class HomeViewModel(
     private suspend fun getCategory() : List<String> {
         categoryUseCase.execute().let { result ->
             when (result) {
-                is ResultWrapper.Succsess -> {
+                is ResultWrapper.Success -> {
                     return (result).value.categories.map { it.title }
                 }
 

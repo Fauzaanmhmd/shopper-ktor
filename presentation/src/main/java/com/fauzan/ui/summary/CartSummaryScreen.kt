@@ -35,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.fauzan.BottomNavItems
 import com.fauzan.R
 import com.fauzan.domain.model.CartItemModel
 import com.fauzan.domain.model.CartSummary
@@ -43,7 +42,6 @@ import com.fauzan.model.UserAddress
 import com.fauzan.navigation.HomeScreen
 import com.fauzan.navigation.UserAddressRoute
 import com.fauzan.navigation.UserAddressRouteWrapper
-import com.fauzan.ui.home.HomeScreen
 import com.fauzan.ui.user_address.USER_ADDRESS_SCREEN
 import com.fauzan.utils.CurrencyUtils
 import org.koin.androidx.compose.koinViewModel

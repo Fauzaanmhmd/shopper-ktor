@@ -4,9 +4,8 @@ import java.text.NumberFormat
 import java.util.Currency
 
 object CurrencyUtils {
-    fun formatPrice(price: Double, currency: String = "USD"): String {
-        val format = NumberFormat.getCurrencyInstance()
-        format.currency = Currency.getInstance(currency)
-        return format.format(price)
+    val usdFormat: NumberFormat = NumberFormat.getCurrencyInstance().apply {
+        currency = Currency.getInstance("USD")
     }
+    fun formatPrice(price: Double): String = usdFormat.format(price)
 }

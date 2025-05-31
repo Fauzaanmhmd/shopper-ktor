@@ -1,6 +1,5 @@
 package com.fauzan.ui.home
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -43,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -51,6 +51,7 @@ import coil.compose.AsyncImage
 import com.fauzan.R
 import com.fauzan.domain.model.Product
 import com.fauzan.model.UiProductModel
+import com.fauzan.navigation.CartScreen
 import com.fauzan.navigation.ProductDetails
 import org.koin.androidx.compose.koinViewModel
 
@@ -108,6 +109,9 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = koinView
                 loading.value,
                 onClick = {
                     navController.navigate(ProductDetails(UiProductModel.fromProduct(it)))
+                },
+                onCartClicked = {
+                    navController.navigate(CartScreen)
                 }
             )
         }
@@ -115,7 +119,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = koinView
 }
 
 @Composable
-fun ProfileHeader() {
+fun ProfileHeader(onCartClicked: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -128,7 +132,9 @@ fun ProfileHeader() {
             Image(
                 painter = painterResource(id = R.drawable.ic_profile),
                 contentDescription = null,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
@@ -142,17 +148,35 @@ fun ProfileHeader() {
                 )
             }
         }
-        Image(
-            painter = painterResource(id = R.drawable.ic_notification),
-            contentDescription = null,
+        Row(
             modifier = Modifier
-                .size(48.dp)
                 .align(Alignment.CenterEnd)
-                .clip(CircleShape)
-                .background(Color.LightGray.copy(alpha = 0.3f))
-                .padding(8.dp),
-            contentScale = ContentScale.Inside
-        )
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_notification),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray.copy(alpha = 0.3f))
+                    .padding(8.dp),
+                contentScale = ContentScale.Inside
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Image(
+                painter = painterResource(id = R.drawable.ic_cart),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray.copy(alpha = 0.3f))
+                    .padding(8.dp)
+                    .clickable {
+                        onCartClicked()
+                    },
+                contentScale = ContentScale.Inside
+            )
+        }
     }
 }
 
@@ -163,24 +187,28 @@ fun HomeContent(
     categories: List<String>,
     isLoading: Boolean = false,
     errorMsg: String? = null,
-    onClick: (Product) -> Unit
+    onClick: (Product) -> Unit,
+    onCartClicked: () -> Unit
 ) {
     LazyColumn {
         item {
-            ProfileHeader()
+            ProfileHeader(onCartClicked)
             Spacer(modifier = Modifier.size(16.dp))
             SearchBar(value = "", onTextChanged = {})
             Spacer(modifier = Modifier.size(16.dp))
         }
         item {
             if (isLoading) {
-                Column (
+                Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(modifier = Modifier.size(50.dp))
-                    Text(text = "Loading...", style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        text = stringResource(R.string.loading),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
 
@@ -190,8 +218,9 @@ fun HomeContent(
 
             if (categories.isNotEmpty()) {
                 LazyRow {
-                    items(categories,
-                        key = {it}
+                    items(
+                        categories,
+                        key = { it }
                     ) { category ->
                         val isVisible = remember {
                             mutableStateOf(false)
@@ -199,7 +228,10 @@ fun HomeContent(
                         LaunchedEffect(true) {
                             isVisible.value = true
                         }
-                        AnimatedVisibility(visible = isVisible.value, enter = fadeIn() + expandVertically()) {
+                        AnimatedVisibility(
+                            visible = isVisible.value,
+                            enter = fadeIn() + expandVertically()
+                        ) {
                             Text(
                                 text = category.replaceFirstChar { it.uppercase() },
                                 style = MaterialTheme.typography.bodyMedium,
@@ -221,7 +253,11 @@ fun HomeContent(
                 Spacer(modifier = Modifier.size(16.dp))
             }
             if (popularProducts.isNotEmpty()) {
-                HomeProductRow(products = popularProducts, title = "Popular Products", onClick = onClick)
+                HomeProductRow(
+                    products = popularProducts,
+                    title = "Popular Products",
+                    onClick = onClick
+                )
             }
         }
     }
@@ -287,15 +323,19 @@ fun HomeProductRow(products: List<Product>, title: String, onClick: (Product) ->
         }
         Spacer(modifier = Modifier.size(8.dp))
         LazyRow {
-            items(products,
-                key = {it.id}) { product ->
+            items(
+                products,
+                key = { it.id }) { product ->
                 val isVisible = remember {
                     mutableStateOf(false)
                 }
                 LaunchedEffect(true) {
                     isVisible.value = true
                 }
-                AnimatedVisibility(visible = isVisible.value, enter = fadeIn() + expandVertically()) {
+                AnimatedVisibility(
+                    visible = isVisible.value,
+                    enter = fadeIn() + expandVertically()
+                ) {
                     ProductItem(product = product, onClick)
                 }
             }
@@ -305,7 +345,7 @@ fun HomeProductRow(products: List<Product>, title: String, onClick: (Product) ->
 
 
 @Composable
-fun ProductItem(product: Product, onClick:(Product) -> Unit) {
+fun ProductItem(product: Product, onClick: (Product) -> Unit) {
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp)
@@ -322,7 +362,6 @@ fun ProductItem(product: Product, onClick:(Product) -> Unit) {
                     .fillMaxWidth()
                     .height(96.dp)
             )
-            Log.d("coba", "${product.image}")
             Spacer(modifier = Modifier.size(8.dp))
             Text(
                 text = product.title,
